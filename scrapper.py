@@ -6,13 +6,15 @@ def get_last_page_SO(url):
   result = requests.get(url)
   soup = BeautifulSoup(result.text, 'html.parser')
   s_page = soup.find("div",{"class":"s-pagination"})
-  links = s_page.find_all("a")
-  pages = []
-  for link in links[0:-1]:
-    pages.append(int(link.find("span").string))
-  last_page = pages[-1]
-  return last_page
- 
+  if s_page:
+    links = s_page.find_all("a")
+    pages = []
+    for link in links[0:-1]:
+      pages.append(int(link.find("span").string))
+    last_page = pages[-1]
+    return last_page
+  else:
+    return -1
 
 def extract_job_SO(html):
     htitle = html.find("h2",{"class":"mb4"})
@@ -43,5 +45,7 @@ def extract_jobs_from_html_SO(l_page,url):
 def get_jobs(word):
   STACKOVERFLOW_URL=f"https://stackoverflow.com/jobs?q={word}"
   last_page = get_last_page_SO(STACKOVERFLOW_URL)
+  if last_page == -1:
+    return
   jobs = extract_jobs_from_html_SO(last_page,STACKOVERFLOW_URL)
   return jobs
