@@ -2,10 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 
 
-STACKOVERFLOW_URL="https://stackoverflow.com/jobs?q=python"
-
-def get_last_page_SO():
-  result = requests.get(f"{STACKOVERFLOW_URL}")
+def get_last_page_SO(url):
+  result = requests.get(url)
   soup = BeautifulSoup(result.text, 'html.parser')
   s_page = soup.find("div",{"class":"s-pagination"})
   links = s_page.find_all("a")
@@ -29,12 +27,12 @@ def extract_job_SO(html):
       location = location.strip()
     return {'TITLE': title,'COMPANY': company,'LOCATION': location,'Link':f"https://stackoverflow.com{link}"}
 
-def extract_jobs_from_html_SO(l_page):
+def extract_jobs_from_html_SO(l_page,url):
   jobs = []
   for page in range(l_page):
     print("==============================")
     print(f"Scrapping Stackoverflow {page} page ")
-    result = requests.get(f"{STACKOVERFLOW_URL}&pg={page}")
+    result = requests.get(f"{url}&pg={page}")
     soup = BeautifulSoup(result.text, 'html.parser')
     job_div = soup.find_all("div",{"class": "-job"})
     for html in job_div:
@@ -42,7 +40,8 @@ def extract_jobs_from_html_SO(l_page):
      jobs.append(job_info)
   return jobs
 
-def get_jobs():
-  last_page = get_last_page_SO()
-  jobs = extract_jobs_from_html_SO(last_page)
+def get_jobs(word):
+  STACKOVERFLOW_URL=f"https://stackoverflow.com/jobs?q={word}"
+  last_page = get_last_page_SO(STACKOVERFLOW_URL)
+  jobs = extract_jobs_from_html_SO(last_page,STACKOVERFLOW_URL)
   return jobs
