@@ -14,16 +14,16 @@ def report():
   word = request.args.get('word')
   if word:
     word = word.lower()
-    fromdb = db.get(word)
-    if fromdb:
-      job_result = fromdb
+    existingjobs = db.get(word)
+    if existingjobs:
+      job_result = existingjobs
     else:
       job_result = get_jobs(word)
       db[word] = job_result
-    print(job_result)
   else:
     return redirect("/")
-  return render_template("report.html",searchby=word,jobresult=job_result,jobnum=len(job_result))
+  
+  return render_template("report.html",searchby=word,jobnum=len(job_result), jobs=job_result)
 
 #@app.route("/<username>")
 #def contact(username):

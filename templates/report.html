@@ -2,11 +2,30 @@
 <html>
   <head>
     <title>Results</title>
+    <style>
+      section {
+        display : grid;
+        gap: 20px;
+        grid-template-columns: repeat(4,1fr);
+      }
+
+    </style>
   </head>
   <body>
     <h1>Results</h1>
     <h3>you are looking for {{searchby}} jobs</h3>
     <h3>{{jobnum}} jobs found</h3>
-    <div>{{jobresult}}</div>
+    <section>
+      <h4>Title</h4>
+      <h4>Company</h4>
+      <h4>Location</h4>
+      <h4>Link</h4>
+      {% for job in jobs %}
+        <span>{{job.TITLE}}</span>
+        <span>{{job.COMPANY}}</span>
+        <span>{{job.LOCATION}}</span>
+        <a href="{{job.Link}}" target="_blank">apply</a>
+      {% endfor %}
+    </section>
   </body>
 </html>
